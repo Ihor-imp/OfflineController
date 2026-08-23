@@ -1,37 +1,81 @@
+# OfflineController
 
-This directory is intended for project header files.
+Offline controller for manual control of an embedded system.
 
-A header file is a file containing C declarations and macro definitions
-to be shared between several project source files. You request the use of a
-header file in your project source file (C, C++, etc) located in `src` folder
-by including it, with the C preprocessing directive `#include'.
+## About
 
-```src/main.c
+**OfflineController** is an embedded project designed to provide a simple local interface for controlling a device without requiring a PC, smartphone, or network connection.
 
-#include "header.h"
+The project is being developed as a practical embedded systems project with a focus on:
 
-int main (void)
-{
- ...
-}
+* microcontroller programming;
+* hardware control;
+* buttons and user input;
+* display interface;
+* modular C++ code;
+* device state management;
+* future expansion with additional control functions.
+
+## Project Status
+
+**Version:** 0.1
+**Status:** In development
+
+The project is currently at an early development stage. The basic project structure has been created, and hardware and software functionality will be added incrementally.
+
+## Main Goals
+
+* Create a standalone offline controller.
+* Implement a simple user interface.
+* Control the target device using physical buttons.
+* Display current device status and parameters.
+* Keep the firmware modular and easy to maintain.
+* Develop reusable drivers for hardware components.
+
+## Hardware
+
+The exact hardware configuration is still being developed.
+
+Planned components may include:
+
+* Microcontroller
+* OLED display
+* Control buttons
+* Status indicators
+* Additional input devices
+
+## Software
+
+The project is developed using:
+
+* C++
+* Arduino Framework
+* PlatformIO
+
+The firmware is organized into separate modules and drivers where possible.
+
+## Project Structure
+
+```text
+OfflineController/
+├── include/
+├── lib/
+├── src/
+├── test/
+├── .gitignore
+├── platformio.ini
+└── README.md
 ```
 
-Including a header file produces the same results as copying the header file
-into each source file that needs it. Such copying would be time-consuming
-and error-prone. With a header file, the related declarations appear
-in only one place. If they need to be changed, they can be changed in one
-place, and programs that include the header file will automatically use the
-new version when next recompiled. The header file eliminates the labor of
-finding and changing all the copies as well as the risk that a failure to
-find one copy will result in inconsistencies within a program.
+## Development
 
-In C, the convention is to give header files names that end with `.h'.
+This project is actively under development. New hardware features, drivers, and control functionality will be added over time.
 
-Read more about using header files in official GCC documentation:
+## Version History
 
-* Include Syntax
-* Include Operation
-* Once-Only Headers
-* Computed Includes
+### v0.1
 
-https://gcc.gnu.org/onlinedocs/cpp/Header-Files.html
+* Initial project repository created.
+* Basic project structure established.
+* Git repository initialized.
+* README added.
