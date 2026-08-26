@@ -27,10 +27,21 @@ uint32_t timeLongPressed = 2000;
 
 uint8_t menuPosition = 0;
 
+float stepValue = 0;
+uint8_t settingPosition = 0;
+
 float step = 0;
 
 bool minus = false;
-bool inMenu = false;
+
+enum class Screen
+{
+    MAIN,
+    MENU,
+    SETTING
+};
+
+Screen screen = Screen::MAIN;
 
 void setup()
 {
@@ -136,13 +147,65 @@ void stepMove()
     display.printValue(step, 35, 55);
 }
 
-void menu()
+void drawSetting()
+{
+    display.clear();
+    display.printText("Step", 10, 0);
+    display.printText("Speed", 10, 10);
+    display.printText("Feed", 10, 20);
+
+    display.printText("Back", 10, 30);
+}
+
+void drawMenu()
 {
     display.printText("Setting", 10, 0);
     display.printText("Zero Z", 10, 10);
     display.printText("Zero X", 10, 20);
     display.printText("Zero Y", 10, 30);
     display.printText("Home", 10, 40);
+    display.printText("Back", 10, 50);
+}
+
+uint8_t moveCursorDown(uint8_t position, uint8_t minPosition, uint8_t maxPosition)
+{
+    display.fillRect(0, position * 10, 10, 10);
+    if (position < maxPosition)
+    {
+        position++;
+    }
+    else
+    {
+        position = minPosition;
+    }
+    display.printText(">", 0, position * 10);
+
+    return position;
+}
+
+uint8_t moveCursorUp(uint8_t position, uint8_t minPosition, uint8_t maxPosition)
+{
+    display.fillRect(0, position * 10, 10, 10);
+    if (position > minPosition)
+    {
+        position--;
+    }
+    else
+    {
+        position = maxPosition;
+    }
+    display.printText(">", 0, position * 10);
+
+    return position;
+}
+
+void drawMain()
+{
+    display.printText("X: ", 0, 0);
+    display.printText("Y: ", 0, 10);
+    display.printText("Z: ", 0, 20);
+    display.printText("+/-", 110, 0);
+    stepMove();
 }
 
 void loop()
@@ -155,49 +218,55 @@ void loop()
 
     if (buttonPLUS_MINUS.longPressed())
     {
+        screen = Screen::MENU;
         display.clear();
-        menu();
-        display.printText(">", 0, menuPosition * 10);
-        inMenu = !inMenu;
+        drawMenu();
     }
-
-    if (inMenu)
+    if (screen == Screen::MENU)
     {
+        display.printText(">", 0, menuPosition * 10);
 
         if (buttonX.wasPressed())
         {
-            display.fillRect(0, menuPosition * 10, 10, 10);
-            if (menuPosition < 4)
-            {
-                menuPosition++;
-            }
-            else
-            {
-                menuPosition = 0;
-            }
-            display.printText(">", 0, menuPosition * 10);
+            menuPosition = moveCursorDown(menuPosition, 0, 5);
         }
 
         if (buttonY.wasPressed())
         {
-            display.fillRect(0, menuPosition * 10, 10, 10);
-            if (menuPosition > 0)
-            {
-                menuPosition--;
-            }
-            else
-            {
-                menuPosition = 4;
-            }
-            display.printText(">", 0, menuPosition * 10);
+            menuPosition = moveCursorUp(menuPosition, 0, 5);
         }
 
         if (buttonZ.wasPressed())
         {
-            // selected
+            switch (menuPosition)
+            {
+            case 0:
+                drawSetting();
+                display.printText(">", 0, settingPosition * 10);
+                screen = Screen::SETTING;
+                break;
+
+            case 1:
+                display.clear();
+                break;
+            case 2:
+                display.clear();
+                break;
+            case 3:
+                display.clear();
+                break;
+            case 4:
+                display.clear();
+                break;
+            case 5:
+                screen = Screen::MAIN;
+                drawMain();
+            default:
+                break;
+            }
         }
     }
-    else
+    if (screen == Screen::MAIN)
     {
         if (millis() - countSleep >= timeSleep)
         {
@@ -225,6 +294,45 @@ void loop()
         }
 
         stepMove();
+    }
+
+    if (screen == Screen::SETTING)
+    {
+        if (buttonX.wasPressed())
+        {
+            settingPosition = moveCursorDown(settingPosition, 0, 3);
+        }
+
+        if (buttonY.wasPressed())
+        {
+            settingPosition = moveCursorUp(settingPosition, 0, 3);
+        }
+
+        if (buttonZ.wasPressed())
+        {
+            switch (settingPosition)
+            {
+            case 0:
+                display.clear();
+                // open step
+                break;
+
+            case 1:
+                display.clear();
+                // open speed
+                break;
+            case 2:
+                display.clear();
+                // open feed
+                break;
+            case 3:
+                display.clear();
+                screen = Screen::MENU;
+                drawMenu();
+            default:
+                break;
+            }
+        }
     }
     display.update();
 }
