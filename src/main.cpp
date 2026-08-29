@@ -146,6 +146,8 @@ void drawStepAndSpeed()
 
     display.printText("SPEED: ", 65, 55);
     display.printValue(machineSettings.speed, 100, 55);
+
+    display.update();
 }
 
 void drawSetting()
@@ -154,6 +156,8 @@ void drawSetting()
     display.printText(">", 0, 0);
     display.printText("Step", 10, 0);
     display.printText("Speed", 10, 10);
+
+    display.update();
 }
 
 void drawMenu()
@@ -165,6 +169,8 @@ void drawMenu()
     display.printText("Zero X", 10, 20);
     display.printText("Zero Y", 10, 30);
     display.printText("Home", 10, 40);
+
+    display.update();
 }
 
 void drawMain()
@@ -175,6 +181,8 @@ void drawMain()
     display.printText("Z: ", 0, 20);
     display.printText("+/-", 110, 0);
     drawStepAndSpeed();
+
+    display.update();
 }
 
 void drawStep()
@@ -196,6 +204,8 @@ void drawStep()
     display.printText("X: ", 10, 20);
     display.printText("Y: ", 10, 30);
     display.printText("Z: ", 10, 40);
+
+    display.update();
 }
 
 void drawSpeed()
@@ -209,6 +219,8 @@ void drawSpeed()
     display.printValue(500, 10, 30);
     display.printValue(350, 10, 40);
     display.printValue(100, 10, 50);
+
+    display.update();
 }
 
 uint8_t moveCursorDown(uint8_t position, uint8_t minPosition, uint8_t maxPosition)
@@ -224,6 +236,7 @@ uint8_t moveCursorDown(uint8_t position, uint8_t minPosition, uint8_t maxPositio
     }
     display.printText(">", 0, position * 10);
 
+    display.update();
     return position;
 }
 
@@ -240,6 +253,7 @@ uint8_t moveCursorUp(uint8_t position, uint8_t minPosition, uint8_t maxPosition)
     }
     display.printText(">", 0, position * 10);
 
+    display.update();
     return position;
 }
 
@@ -258,6 +272,7 @@ uint8_t moveCursorRight(uint8_t position, uint8_t minPosition, uint8_t maxPositi
 
     display.printText("|", position * 20, 0);
 
+    display.update();
     return position;
 }
 
@@ -268,6 +283,7 @@ void updateButtons()
     buttonZ.update();
     buttonSTOP.update();
     buttonPLUS_MINUS.update();
+
 }
 
 void handleMain()
@@ -276,6 +292,7 @@ void handleMain()
     {
         screen = Screen::MENU;
         drawMenu();
+        return;
     }
     if (millis() - countSleep >= timeSleep)
     {
@@ -414,6 +431,8 @@ void handleSetting()
                 Serial.print("step = ");
                 Serial.println(machineSettings.step);
                 display.printValue(machineSettings.step, 10, 50);
+
+                display.update();
             }
         }
         if (buttonPLUS_MINUS.wasPressed())
@@ -434,6 +453,8 @@ void handleSetting()
                 machineSettings.speed = speedValue[speedPosition - 1];
                 display.fillRect(55, 0, 40, 40);
                 display.printValue(machineSettings.speed, 55, 0);
+
+                display.update();
             }
         }
         if (buttonPLUS_MINUS.wasPressed())
