@@ -24,10 +24,7 @@ uint32_t timeSleep = 100000;
 
 uint8_t menuPosition = 0;
 
-float stepValue = 0;
 uint8_t settingPosition = 0;
-
-float step = 0;
 
 bool minus = false;
 
@@ -45,11 +42,20 @@ enum class SettingPage
     SPEED,
 };
 
+struct MachineSettings
+{
+    float step;
+    uint16_t speed;
+};
+
+MachineSettings machineSettings = {
+    0,
+    0};
+
 uint8_t stepPosition = 2;
 uint8_t axisPosition = 1;
 
 uint8_t speedPosition = 0;
-uint16_t speed = 0;
 
 Screen screen = Screen::MAIN;
 SettingPage settingPage = SettingPage::MENU;
@@ -75,61 +81,38 @@ void setup()
     countSleep = millis();
 }
 
-void workButtonX()
+void workButtonAxis(const char *text, float &position, uint8_t x, uint8_t y)
 {
     display.on();
-    display.printText("X: ", 0, 0);
+    display.printText(text, x, y);
     if (!minus)
     {
-        positionX += step;
+        position += machineSettings.step;
     }
     else
     {
-        positionX -= step;
+        position -= machineSettings.step;
     }
 
-    display.fillRect(13, 0, 35, 8);
-    display.printValue(positionX, 13, 0);
+    display.fillRect(13, y, 35, 8);
+    display.printValue(position, 13, y);
     display.update();
     countSleep = millis();
+}
+
+void workButtonX()
+{
+    workButtonAxis("X: ", positionX, 0, 0);
 }
 
 void workButtonY()
 {
-    display.on();
-    display.printText("Y: ", 0, 10);
-    if (!minus)
-    {
-        positionY += step;
-    }
-    else
-    {
-        positionY -= step;
-    }
-
-    display.fillRect(13, 10, 35, 8);
-    display.printValue(positionY, 13, 10);
-    display.update();
-    countSleep = millis();
+    workButtonAxis("Y: ", positionY, 0, 10);
 }
 
 void workButtonZ()
 {
-    display.on();
-    display.printText("Z: ", 0, 20);
-    if (!minus)
-    {
-        positionZ += step;
-    }
-    else
-    {
-        positionZ -= step;
-    }
-
-    display.fillRect(13, 20, 35, 8);
-    display.printValue(positionZ, 13, 20);
-    display.update();
-    countSleep = millis();
+    workButtonAxis("Z: ", positionZ, 0, 20);
 }
 
 void workButtonPlusOrMinus()
@@ -159,10 +142,10 @@ void workButtonStop()
 void drawStepAndSpeed()
 {
     display.printText("STEP: ", 0, 55);
-    display.printValue(step, 30, 55);
+    display.printValue(machineSettings.step, 30, 55);
 
     display.printText("SPEED: ", 65, 55);
-    display.printValue(speed, 100, 55);
+    display.printValue(machineSettings.speed, 100, 55);
 }
 
 void drawSetting()
@@ -219,7 +202,7 @@ void drawSpeed()
 {
     display.clear();
     display.printText("SPEED: ", 10, 0);
-    display.printValue(speed, 55, 0);
+    display.printValue(machineSettings.speed, 55, 0);
 
     display.printValue(1000, 10, 10);
     display.printValue(700, 10, 20);
@@ -278,55 +261,125 @@ uint8_t moveCursorRight(uint8_t position, uint8_t minPosition, uint8_t maxPositi
     return position;
 }
 
-void loop()
+void updateButtons()
 {
     buttonX.update();
     buttonY.update();
     buttonZ.update();
     buttonSTOP.update();
     buttonPLUS_MINUS.update();
+}
 
+void handleMain()
+{
     if (buttonPLUS_MINUS.longPressed())
     {
         screen = Screen::MENU;
         drawMenu();
     }
-    if (screen == Screen::MENU)
+    if (millis() - countSleep >= timeSleep)
     {
+        display.off();
+    }
+
+    if (buttonX.wasPressed())
+    {
+        workButtonX();
+    }
+
+    if (buttonY.wasPressed())
+    {
+        workButtonY();
+    }
+
+    if (buttonZ.wasPressed())
+    {
+        workButtonZ();
+    }
+
+    if (buttonPLUS_MINUS.wasPressed())
+    {
+        workButtonPlusOrMinus();
+    }
+
+    drawStepAndSpeed();
+}
+
+void handleMenu()
+{
+    if (buttonX.wasPressed())
+    {
+        menuPosition = moveCursorDown(menuPosition, 0, 4);
+    }
+
+    if (buttonY.wasPressed())
+    {
+        menuPosition = moveCursorUp(menuPosition, 0, 4);
+    }
+
+    if (buttonZ.wasPressed())
+    {
+        switch (menuPosition)
+        {
+        case 0:
+            drawSetting();
+            screen = Screen::SETTING;
+            break;
+
+        case 1:
+            display.clear();
+            // Z
+            break;
+        case 2:
+            display.clear();
+            // X
+            break;
+        case 3:
+            display.clear();
+            // Y
+            break;
+        case 4:
+            display.clear();
+            // HOME
+            break;
+        default:
+            break;
+        }
+    }
+    if (buttonPLUS_MINUS.wasPressed())
+    {
+        screen = Screen::MAIN;
+        drawMain();
+    }
+}
+
+void handleSetting()
+{
+    switch (settingPage)
+    {
+    case SettingPage::MENU:
         if (buttonX.wasPressed())
         {
-            menuPosition = moveCursorDown(menuPosition, 0, 4);
+            settingPosition = moveCursorDown(settingPosition, 0, 1);
         }
 
         if (buttonY.wasPressed())
         {
-            menuPosition = moveCursorUp(menuPosition, 0, 4);
+            settingPosition = moveCursorUp(settingPosition, 0, 1);
         }
 
         if (buttonZ.wasPressed())
         {
-            switch (menuPosition)
+            switch (settingPosition)
             {
             case 0:
-                drawSetting();
-                screen = Screen::SETTING;
+                settingPage = SettingPage::STEP;
+                drawStep();
                 break;
 
             case 1:
-                display.clear();
-                // Z
-                break;
-            case 2:
-                display.clear();
-                // X
-                break;
-            case 3:
-                display.clear();
-                // Y
-                break;
-            case 4:
-                display.clear();
-                // HOME
+                settingPage = SettingPage::SPEED;
+                drawSpeed();
                 break;
             default:
                 break;
@@ -334,81 +387,12 @@ void loop()
         }
         if (buttonPLUS_MINUS.wasPressed())
         {
-            screen = Screen::MAIN;
-            drawMain();
+            screen = Screen::MENU;
+            drawMenu();
         }
-    }
-    if (screen == Screen::MAIN)
-    {
-        if (millis() - countSleep >= timeSleep)
-        {
-            display.off();
-        }
+        break;
 
-        if (buttonX.wasPressed())
-        {
-            workButtonX();
-        }
-
-        if (buttonY.wasPressed())
-        {
-            workButtonY();
-        }
-
-        if (buttonZ.wasPressed())
-        {
-            workButtonZ();
-        }
-
-        if (buttonPLUS_MINUS.wasPressed())
-        {
-            workButtonPlusOrMinus();
-        }
-
-        drawStepAndSpeed();
-    }
-
-    if (screen == Screen::SETTING)
-    {
-        if (settingPage == SettingPage::MENU)
-        {
-            if (buttonX.wasPressed())
-            {
-                settingPosition = moveCursorDown(settingPosition, 0, 1);
-            }
-
-            if (buttonY.wasPressed())
-            {
-                settingPosition = moveCursorUp(settingPosition, 0, 1);
-            }
-
-            if (buttonZ.wasPressed())
-            {
-                switch (settingPosition)
-                {
-                case 0:
-                    settingPage = SettingPage::STEP;
-                    drawStep();
-                    break;
-
-                case 1:
-                    settingPage = SettingPage::SPEED;
-                    drawSpeed();
-                    break;
-                default:
-                    break;
-                }
-            }
-            if (buttonPLUS_MINUS.wasPressed())
-            {
-                screen = Screen::MENU;
-                drawMenu();
-            }
-        }
-    }
-
-    if (settingPage == SettingPage::STEP)
-    {
+    case SettingPage::STEP:
         if (buttonX.wasPressed())
         {
             axisPosition = moveCursorDown(axisPosition, 2, 4);
@@ -422,14 +406,14 @@ void loop()
         {
             if (stepPosition >= 2 && stepPosition <= 5)
             {
-                step = stepValues[stepPosition - 2];
+                machineSettings.step = stepValues[stepPosition - 2];
 
                 Serial.print("stepPosition = ");
                 Serial.println(stepPosition);
 
                 Serial.print("step = ");
-                Serial.println(step);
-                display.printValue(step, 10, 50);
+                Serial.println(machineSettings.step);
+                display.printValue(machineSettings.step, 10, 50);
             }
         }
         if (buttonPLUS_MINUS.wasPressed())
@@ -437,10 +421,8 @@ void loop()
             settingPage = SettingPage::MENU;
             drawSetting();
         }
-    }
-
-    if (settingPage == SettingPage::SPEED)
-    {
+        break;
+    case SettingPage::SPEED:
         if (buttonX.wasPressed())
         {
             speedPosition = moveCursorDown(speedPosition, 1, 5);
@@ -449,9 +431,9 @@ void loop()
         {
             if (speedPosition >= 1 && speedPosition <= 5)
             {
-                speed = speedValue[speedPosition - 1];
+                machineSettings.speed = speedValue[speedPosition - 1];
                 display.fillRect(55, 0, 40, 40);
-                display.printValue(speed, 55, 0);
+                display.printValue(machineSettings.speed, 55, 0);
             }
         }
         if (buttonPLUS_MINUS.wasPressed())
@@ -459,6 +441,30 @@ void loop()
             settingPage = SettingPage::MENU;
             drawSetting();
         }
+        break;
+    default:
+        break;
     }
-    display.update();
+}
+
+void handleScreen()
+{
+    switch (screen)
+    {
+    case Screen::MAIN:
+        handleMain();
+        break;
+    case Screen::MENU:
+        handleMenu();
+        break;
+    case Screen::SETTING:
+        handleSetting();
+        break;
+    }
+}
+
+void loop()
+{
+    updateButtons();
+    handleScreen();
 }
