@@ -52,8 +52,8 @@ MachineSettings machineSettings = {
     0,
     0};
 
-uint8_t stepPosition = 2;
-uint8_t axisPosition = 1;
+uint8_t stepPosition = 0;
+uint8_t axisPosition = 0;
 
 uint8_t speedPosition = 0;
 
@@ -188,18 +188,20 @@ void drawMain()
 void drawStep()
 {
     display.clear();
-    for (uint8_t j = 25; j < 128; j += 23)
+    display.printText(">", 0, 20);
+    for (uint8_t j = 20; j < 128; j += 23)
     {
         for (uint8_t i = 10; i < 50; i += 8)
         {
             display.printText("|", j, i);
         }
     }
+    display.printText("|", 32, 0);
 
-    display.printText("100", 30, 10);
-    display.printText("10", 55, 10);
-    display.printText("1", 82, 10);
-    display.printText("0.1", 100, 10);
+    display.printText("100", 25, 10);
+    display.printText("10", 51, 10);
+    display.printText("1", 77, 10);
+    display.printText("0.1", 95, 10);
 
     display.printText("X: ", 10, 20);
     display.printText("Y: ", 10, 30);
@@ -213,6 +215,7 @@ void drawSpeed()
     display.clear();
     display.printText("SPEED: ", 10, 0);
     display.printValue(machineSettings.speed, 55, 0);
+    display.printText(">", 0, 10);
 
     display.printValue(1000, 10, 10);
     display.printValue(700, 10, 20);
@@ -223,57 +226,58 @@ void drawSpeed()
     display.update();
 }
 
-uint8_t moveCursorDown(uint8_t position, uint8_t minPosition, uint8_t maxPosition)
+uint8_t moveCursorDown(uint8_t index, uint8_t maxIndex, uint8_t startY, uint8_t stepY)
 {
-    display.fillRect(0, position * 10, 10, 10);
-    if (position < maxPosition)
+    display.fillRect(0, startY + (index * stepY), 10, 10);
+    if (index < maxIndex)
     {
-        position++;
+        index++;
     }
     else
     {
-        position = minPosition;
+        index = 0;
     }
-    display.printText(">", 0, position * 10);
+    display.printText(">", 0, startY + (index * stepY));
 
     display.update();
-    return position;
+    return index;
+}
+uint8_t moveCursorUp(uint8_t index, uint8_t maxIndex, uint8_t startY, uint8_t stepY = 10)
+{
+    display.fillRect(0, startY + (index * stepY), 10, 10);
+
+    if (index > 0)
+    {
+        index--;
+    }
+    else
+    {
+        index = maxIndex;
+    }
+
+    display.printText(">", 0, startY + (index * stepY));
+    display.update();
+
+    return index;
 }
 
-uint8_t moveCursorUp(uint8_t position, uint8_t minPosition, uint8_t maxPosition)
+uint8_t moveCursorRight(uint8_t index, uint8_t maxIndex, uint8_t startX, uint8_t stepX, uint8_t y)
 {
-    display.fillRect(0, position * 10, 10, 10);
-    if (position > minPosition)
+    display.fillRect(startX + (index * stepX), y, 10, 10);
+
+    if (index < maxIndex)
     {
-        position--;
+        index++;
     }
     else
     {
-        position = maxPosition;
+        index = 0;
     }
-    display.printText(">", 0, position * 10);
 
+    display.printText("|", startX + (index * stepX), y);
     display.update();
-    return position;
-}
 
-uint8_t moveCursorRight(uint8_t position, uint8_t minPosition, uint8_t maxPosition)
-{
-    display.fillRect(position * 20, 0, 10, 10);
-
-    if (position < maxPosition)
-    {
-        position++;
-    }
-    else
-    {
-        position = minPosition;
-    }
-
-    display.printText("|", position * 20, 0);
-
-    display.update();
-    return position;
+    return index;
 }
 
 void updateButtons()
@@ -283,7 +287,6 @@ void updateButtons()
     buttonZ.update();
     buttonSTOP.update();
     buttonPLUS_MINUS.update();
-
 }
 
 void handleMain()
@@ -326,12 +329,12 @@ void handleMenu()
 {
     if (buttonX.wasPressed())
     {
-        menuPosition = moveCursorDown(menuPosition, 0, 4);
+        menuPosition = moveCursorDown(menuPosition, 4, 0, 10);
     }
 
     if (buttonY.wasPressed())
     {
-        menuPosition = moveCursorUp(menuPosition, 0, 4);
+        menuPosition = moveCursorUp(menuPosition, 4, 0, 10);
     }
 
     if (buttonZ.wasPressed())
@@ -377,12 +380,12 @@ void handleSetting()
     case SettingPage::MENU:
         if (buttonX.wasPressed())
         {
-            settingPosition = moveCursorDown(settingPosition, 0, 1);
+            settingPosition = moveCursorDown(settingPosition, 1, 0, 10);
         }
 
         if (buttonY.wasPressed())
         {
-            settingPosition = moveCursorUp(settingPosition, 0, 1);
+            settingPosition = moveCursorUp(settingPosition, 1, 0, 10);
         }
 
         if (buttonZ.wasPressed())
@@ -412,28 +415,25 @@ void handleSetting()
     case SettingPage::STEP:
         if (buttonX.wasPressed())
         {
-            axisPosition = moveCursorDown(axisPosition, 2, 4);
+            axisPosition = moveCursorDown(axisPosition, 2, 20, 10);
         }
 
         if (buttonY.wasPressed())
         {
-            stepPosition = moveCursorRight(stepPosition, 2, 5);
+            stepPosition = moveCursorRight(stepPosition, 3, 32, 23, 0);
         }
         if (buttonZ.wasPressed())
         {
-            if (stepPosition >= 2 && stepPosition <= 5)
-            {
-                machineSettings.step = stepValues[stepPosition - 2];
+            machineSettings.step = stepValues[stepPosition];
 
-                Serial.print("stepPosition = ");
-                Serial.println(stepPosition);
+            Serial.print("stepPosition = ");
+            Serial.println(stepPosition);
 
-                Serial.print("step = ");
-                Serial.println(machineSettings.step);
-                display.printValue(machineSettings.step, 10, 50);
+            Serial.print("step = ");
+            Serial.println(machineSettings.step);
+            display.printValue(machineSettings.step, 10, 50);
 
-                display.update();
-            }
+            display.update();
         }
         if (buttonPLUS_MINUS.wasPressed())
         {
@@ -444,18 +444,15 @@ void handleSetting()
     case SettingPage::SPEED:
         if (buttonX.wasPressed())
         {
-            speedPosition = moveCursorDown(speedPosition, 1, 5);
+            speedPosition = moveCursorDown(speedPosition, 4, 10, 10);
         }
         if (buttonZ.wasPressed())
         {
-            if (speedPosition >= 1 && speedPosition <= 5)
-            {
-                machineSettings.speed = speedValue[speedPosition - 1];
-                display.fillRect(55, 0, 40, 40);
-                display.printValue(machineSettings.speed, 55, 0);
+            machineSettings.speed = speedValue[speedPosition];
+            display.fillRect(55, 0, 40, 40);
+            display.printValue(machineSettings.speed, 55, 0);
 
-                display.update();
-            }
+            display.update();
         }
         if (buttonPLUS_MINUS.wasPressed())
         {
