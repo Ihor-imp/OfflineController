@@ -107,8 +107,6 @@ void DisplayUI::drawStep()
     display.clear();
 
     stepCursorPosition = machine.getStepPosition();
-
-    display.printText(">", 0, 20);
     for (uint8_t j = 20; j < 128; j += 23)
     {
         for (uint8_t i = 10; i < 50; i += 8)
@@ -122,12 +120,7 @@ void DisplayUI::drawStep()
     display.printText("1", 77, 10);
     display.printText("0.1", 95, 10);
 
-    display.printText("X: ", 10, 20);
-    display.printText("Y: ", 10, 30);
-    display.printText("Z: ", 10, 40);
-
-    uint8_t currentPos = machine.getStepPosition();
-    display.printText("|", 32 + (currentPos * 23), 0);
+    display.printText("|", 32 + (stepCursorPosition * 23), 0);
 
     display.printValue(machine.getStep(), 10, 50);
 

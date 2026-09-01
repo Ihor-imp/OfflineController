@@ -27,6 +27,6 @@ public:
     void off();
 
     void printText(const char *text, uint16_t x, uint16_t y);
-    void printValue(const uint16_t value, uint16_t x, uint16_t y);
+    void printValue(const float value, uint16_t x, uint16_t y);
     void fillRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 };

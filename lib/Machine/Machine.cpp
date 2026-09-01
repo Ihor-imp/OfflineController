@@ -53,7 +53,7 @@ void Machine::setStepPosition(uint8_t pos)
      if (pos < 4)
     {
     stepPosition = pos;
-    machineSettings.step = stepValues[stepPosition]; // Одразу оновлюємо крок!
+    machineSettings.step = stepValues[stepPosition];
 }
 }
 
@@ -62,6 +62,6 @@ void Machine::setSpeedPosition(uint8_t pos)
      if (pos < 5)
     {
     speedPosition = pos;
-    machineSettings.speed = speedValue[speedPosition]; // Одразу оновлюємо швидкість!
+    machineSettings.speed = speedValue[speedPosition];
 }
 }

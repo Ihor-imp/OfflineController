@@ -46,7 +46,7 @@ void Display::printText(const char *text, uint16_t x, uint16_t y)
     display.setCursor(x, y);
     display.println(text);
 }
-void Display::printValue(const uint16_t value, uint16_t x, uint16_t y)
+void Display::printValue(const float value, uint16_t x, uint16_t y)
 {
     display.setCursor(x, y);
     display.println(value);

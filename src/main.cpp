@@ -182,11 +182,6 @@ void handleSetting()
     case SettingPage::STEP:
         if (buttonX.wasPressed())
         {
-            displayUI.moveAxisCursorDown();
-        }
-
-        if (buttonY.wasPressed())
-        {
             displayUI.moveStepCursorRight();
         }
         if (buttonZ.wasPressed())
