@@ -50,18 +50,18 @@ void Machine::workButtonStop()
 
 void Machine::setStepPosition(uint8_t pos)
 {
+     if (pos < 4)
+    {
     stepPosition = pos;
     machineSettings.step = stepValues[stepPosition]; // Одразу оновлюємо крок!
+}
 }
 
 void Machine::setSpeedPosition(uint8_t pos)
 {
+     if (pos < 5)
+    {
     speedPosition = pos;
     machineSettings.speed = speedValue[speedPosition]; // Одразу оновлюємо швидкість!
 }
-
-void Machine::setStep(float pos)
-{
-    step = pos;
-    machineSettings.step = step;
 }

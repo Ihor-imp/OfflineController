@@ -32,8 +32,6 @@ private:
     float stepValues[4] = {100, 10, 1, 0.1};
     uint16_t speedValue[5] = {1000, 700, 500, 350, 100};
 
-    uint8_t step = 0;
-
 public:
     Machine();
 
@@ -46,7 +44,6 @@ public:
 
     void setStepPosition(uint8_t pos);
     void setSpeedPosition(uint8_t pos);
-    void setStep(float pos);
 
     float getStep() const { return machineSettings.step; }
     uint16_t getSpeed() const { return machineSettings.speed; }
