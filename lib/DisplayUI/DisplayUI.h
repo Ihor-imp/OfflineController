@@ -15,8 +15,6 @@ private:
     uint8_t menuPosition = 0;
     uint8_t settingPosition = 0;
 
-    uint8_t axisPosition = 0;
-
 public:
     DisplayUI(Display &display, Machine &machine);
 
@@ -27,15 +25,13 @@ public:
     void drawStep();
     void drawSpeed();
 
+    void drawConfirmWindow(const char *message);
+
     void moveMenuCursorDown();
     void moveMenuCursorUp();
     void moveSettingCursorDown();
     void moveSettingCursorUp();
 
-    void selectMenuItem();
-    void selectSettingItem();
-
-    void moveAxisCursorDown();
     void moveStepCursorRight();
     void moveSpeedCursorDown();
 

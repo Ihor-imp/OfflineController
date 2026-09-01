@@ -80,7 +80,7 @@ void DisplayUI::drawStepAndSpeed()
 void DisplayUI::drawMenu()
 {
     display.clear();
-    display.printText(">", 0, 0);
+    display.printText(">", 0, menuPosition * 10);
     display.printText("Setting", 10, 0);
     display.printText("Zero Z", 10, 10);
     display.printText("Zero X", 10, 20);
@@ -143,6 +143,15 @@ void DisplayUI::drawSpeed()
     display.printValue(350, 10, 40);
     display.printValue(100, 10, 50);
 
+    display.update();
+}
+
+void DisplayUI::drawConfirmWindow(const char *message)
+{
+    display.clear();
+    display.printText(message, 40, 10);
+    display.printText("Confirm?", 45, 20);
+    display.printText("X: NO    Z: YES", 20, 40);
     display.update();
 }
 
@@ -217,11 +226,6 @@ void DisplayUI::moveSettingCursorDown()
 void DisplayUI::moveSettingCursorUp()
 {
     settingPosition = moveCursorUp(settingPosition, 1, 0, 10);
-}
-
-void DisplayUI::moveAxisCursorDown()
-{
-    axisPosition = moveCursorDown(axisPosition, 2, 20, 10);
 }
 
 void DisplayUI::moveStepCursorRight()

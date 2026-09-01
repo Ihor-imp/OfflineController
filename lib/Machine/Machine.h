@@ -42,6 +42,12 @@ public:
     void workButtonPlusOrMinus();
     void workButtonStop();
 
+    void zeroZ();
+    void zeroX();
+    void zeroY();
+
+    void moveToHome();
+
     void setStepPosition(uint8_t pos);
     void setSpeedPosition(uint8_t pos);
 

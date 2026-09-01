@@ -28,7 +28,11 @@ enum class Screen
 {
     MAIN,
     MENU,
-    SETTING
+    SETTING,
+    ZERO_Z,
+    ZERO_X,
+    ZERO_Y,
+    HOME
 };
 
 enum class SettingPage
@@ -114,20 +118,20 @@ void handleMenu()
             break;
 
         case 1:
-            display.clear();
-            // Z
+            displayUI.drawConfirmWindow("Zero axis");
+            screen = Screen::ZERO_Z;
             break;
         case 2:
-            display.clear();
-            // X
+            displayUI.drawConfirmWindow("Zero axis");
+            screen = Screen::ZERO_X;
             break;
         case 3:
-            display.clear();
-            // Y
+            displayUI.drawConfirmWindow("Zero axis");
+            screen = Screen::ZERO_Y;
             break;
         case 4:
-            display.clear();
-            // HOME
+            displayUI.drawConfirmWindow("Move home");
+            screen = Screen::HOME;
             break;
         default:
             break;
@@ -137,6 +141,71 @@ void handleMenu()
     {
         screen = Screen::MAIN;
         displayUI.drawMain();
+    }
+}
+
+void handleZeroAxis()
+{
+    switch (screen)
+    {
+    case Screen::ZERO_Z:
+        if (buttonX.wasPressed())
+        {
+            displayUI.drawMenu();
+            screen = Screen::MENU;
+        }
+
+        if (buttonZ.wasPressed())
+        {
+            machine.zeroZ();
+            screen = Screen::MENU;
+            displayUI.drawMenu();
+        }
+        break;
+    case Screen::ZERO_X:
+        if (buttonX.wasPressed())
+        {
+            displayUI.drawMenu();
+            screen = Screen::MENU;
+        }
+
+        if (buttonZ.wasPressed())
+        {
+            machine.zeroX();
+            screen = Screen::MENU;
+            displayUI.drawMenu();
+        }
+        break;
+    case Screen::ZERO_Y:
+        if (buttonX.wasPressed())
+        {
+            displayUI.drawMenu();
+            screen = Screen::MENU;
+        }
+
+        if (buttonZ.wasPressed())
+        {
+            machine.zeroY();
+            screen = Screen::MENU;
+            displayUI.drawMenu();
+        }
+        break;
+    case Screen::HOME:
+        if (buttonX.wasPressed())
+        {
+            displayUI.drawMenu();
+            screen = Screen::MENU;
+        }
+
+        if (buttonZ.wasPressed())
+        {
+            machine.moveToHome();
+            screen = Screen::MENU;
+            displayUI.drawMenu();
+        }
+        break;
+    default:
+        break;
     }
 }
 
@@ -229,6 +298,12 @@ void handleScreen()
         break;
     case Screen::SETTING:
         handleSetting();
+        break;
+    case Screen::ZERO_Z:
+    case Screen::ZERO_X:
+    case Screen::ZERO_Y:
+    case Screen::HOME:
+        handleZeroAxis();
         break;
     }
 }

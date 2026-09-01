@@ -31,6 +31,26 @@ void Machine::workButtonZ()
     workButtonAxis("Z: ", positionZ, 0, 20);
 }
 
+void Machine::zeroZ()
+{
+    //send comand
+}
+
+void Machine::zeroX()
+{
+    //send comand
+}
+
+void Machine::zeroY()
+{
+    //send comand    
+}
+
+void Machine::moveToHome()
+{
+    //move home
+}
+
 void Machine::workButtonPlusOrMinus()
 {
     if (direction == Direction::PLUS)
