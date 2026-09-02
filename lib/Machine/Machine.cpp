@@ -1,6 +1,8 @@
 #include "Machine.h"
+#include "GrblController.h"
 
-Machine::Machine()
+Machine::Machine(GrblController &grbl)
+:grbl(grbl)
 {
 }
 

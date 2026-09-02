@@ -2,8 +2,12 @@
 #include "Display.h"
 #include "Machine.h"
 #include "DisplayUI.h"
+#include "SerialTransport.h"
+#include "GrblController.h"
 
-Machine machine;
+SerialTransport transporter(Serial);
+GrblController controller(transporter);
+Machine machine(controller);
 
 DisplayConfig displayConfig = {
     0x3C,

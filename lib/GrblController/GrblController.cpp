@@ -1,51 +1,53 @@
 #include "GrblController.h"
+#include "SerialTransport.h"
 
-GrblController::GrblController()
+GrblController::GrblController(SerialTransport &transport)
+    : transport(transport)
 {
 }
 
-const char *GrblController::jogX(float distance, float feed)
+void GrblController::jogX(float distance, float feed)
 {
     snprintf(commandBuffer, sizeof(commandBuffer), "$J=G91 X%.1f F%.0f\n", distance, feed);
-    return commandBuffer;
+    transport.send(commandBuffer);
 }
-const char *GrblController::jogY(float distance, float feed)
+void GrblController::jogY(float distance, float feed)
 {
     snprintf(commandBuffer, sizeof(commandBuffer), "$J=G91 Y%.1f F%.0f\n", distance, feed);
-    return commandBuffer;
+    transport.send(commandBuffer);
 }
-const char *GrblController::jogZ(float distance, float feed)
+void GrblController::jogZ(float distance, float feed)
 {
     snprintf(commandBuffer, sizeof(commandBuffer), "$J=G91 Z%.1f F%.0f\n", distance, feed);
-    return commandBuffer;
+    transport.send(commandBuffer);
 }
 
-const char *GrblController::home()
+void GrblController::home()
 {
     snprintf(commandBuffer, sizeof(commandBuffer), "$H\n");
-    return commandBuffer;
+    transport.send(commandBuffer);
 }
 
-const char *GrblController::stop()
+void GrblController::stop()
 {
     snprintf(commandBuffer, sizeof(commandBuffer), "!");
-    return commandBuffer;
+    transport.send(commandBuffer);
 }
 
-const char *GrblController::zeroX()
+void GrblController::zeroX()
 {
     snprintf(commandBuffer, sizeof(commandBuffer), "G92 X0\n");
-    return commandBuffer;
+    transport.send(commandBuffer);
 }
 
-const char *GrblController::zeroY()
+void GrblController::zeroY()
 {
     snprintf(commandBuffer, sizeof(commandBuffer), "G92 Y0\n");
-    return commandBuffer;
+    transport.send(commandBuffer);
 }
 
-const char *GrblController::zeroZ()
+void GrblController::zeroZ()
 {
     snprintf(commandBuffer, sizeof(commandBuffer), "G92 Z0\n");
-    return commandBuffer;
+    transport.send(commandBuffer);
 }

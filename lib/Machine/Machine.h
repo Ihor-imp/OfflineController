@@ -13,9 +13,13 @@ struct MachineSettings
     uint16_t speed;
 };
 
+class GrblController;
+
 class Machine
 {
 private:
+    GrblController &grbl;
+
     float positionX = 0;
     float positionY = 0;
     float positionZ = 0;
@@ -33,7 +37,7 @@ private:
     uint16_t speedValue[5] = {1000, 700, 500, 350, 100};
 
 public:
-    Machine();
+    Machine(GrblController &grbl);
 
     void workButtonAxis(const char *text, float &position, uint8_t x, uint8_t y);
     void workButtonX();
