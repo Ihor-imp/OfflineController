@@ -2,7 +2,7 @@
 #include "GrblController.h"
 
 Machine::Machine(GrblController &grbl)
-:grbl(grbl)
+    : grbl(grbl)
 {
 }
 
@@ -20,37 +20,58 @@ void Machine::workButtonAxis(const char *text, float &position, uint8_t x, uint8
 
 void Machine::workButtonX()
 {
+    float distance = machineSettings.step;
+    if (direction == Direction::MINUS)
+    {
+        distance = -distance;
+    }
+
     workButtonAxis("X: ", positionX, 0, 0);
+    grbl.jogX(distance, 100);
 }
 
 void Machine::workButtonY()
 {
+    float distance = machineSettings.step;
+    if (direction == Direction::MINUS)
+    {
+        distance = -distance;
+    }
+
     workButtonAxis("Y: ", positionY, 0, 10);
+    grbl.jogY(distance, 100);
 }
 
 void Machine::workButtonZ()
 {
+    float distance = machineSettings.step;
+    if (direction == Direction::MINUS)
+    {
+        distance = -distance;
+    }
+
     workButtonAxis("Z: ", positionZ, 0, 20);
+    grbl.jogZ(distance, 100);
 }
 
 void Machine::zeroZ()
 {
-    //send comand
+    grbl.zeroZ();
 }
 
 void Machine::zeroX()
 {
-    //send comand
+    grbl.zeroX();
 }
 
 void Machine::zeroY()
 {
-    //send comand    
+    grbl.zeroY();
 }
 
 void Machine::moveToHome()
 {
-    //move home
+    grbl.home();
 }
 
 void Machine::workButtonPlusOrMinus()
@@ -67,23 +88,23 @@ void Machine::workButtonPlusOrMinus()
 
 void Machine::workButtonStop()
 {
-    // STOP ALL MOVE
+    grbl.stop();
 }
 
 void Machine::setStepPosition(uint8_t pos)
 {
-     if (pos < 4)
+    if (pos < 4)
     {
-    stepPosition = pos;
-    machineSettings.step = stepValues[stepPosition];
-}
+        stepPosition = pos;
+        machineSettings.step = stepValues[stepPosition];
+    }
 }
 
 void Machine::setSpeedPosition(uint8_t pos)
 {
-     if (pos < 5)
+    if (pos < 5)
     {
-    speedPosition = pos;
-    machineSettings.speed = speedValue[speedPosition];
-}
+        speedPosition = pos;
+        machineSettings.speed = speedValue[speedPosition];
+    }
 }
