@@ -314,7 +314,7 @@ void handleScreen()
 
 void setup()
 {
-    Serial.begin(9600);
+    transporter.begin();
     buttonX.begin();
     buttonY.begin();
     buttonZ.begin();
@@ -335,5 +335,11 @@ void setup()
 void loop()
 {
     updateButtons();
+
+    if (buttonSTOP.wasPressed())
+    {
+        machine.workButtonStop();
+    }
+    
     handleScreen();
 }
