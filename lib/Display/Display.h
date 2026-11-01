@@ -19,6 +19,7 @@ private:
 
 public:
     Display(const DisplayConfig &config);
+    void printText(const __FlashStringHelper *text, uint16_t x, uint16_t y);
     void begin();
     void update();
     void clear();

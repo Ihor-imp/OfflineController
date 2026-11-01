@@ -8,18 +8,36 @@ Display::Display(const DisplayConfig &config)
 
 void Display::begin()
 {
+    Wire.begin();
+
     if (!display.begin(SSD1306_SWITCHCAPVCC, config.address))
     {
-        return;
+        pinMode(LED_BUILTIN, OUTPUT);
+
+        while (true)
+        {
+            digitalWrite(LED_BUILTIN, HIGH);
+            delay(100);
+            digitalWrite(LED_BUILTIN, LOW);
+            delay(100);
+        }
     }
 
     display.clearDisplay();
-    display.display();
-
-    display.setCursor(0, 0);
     display.setTextSize(1);
     display.setTextColor(SSD1306_WHITE);
+    display.setCursor(0, 0);
+    display.println(F("DISPLAY OK"));
+    display.display();
 }
+
+void Display::printText(const __FlashStringHelper *text, uint16_t x, uint16_t y)
+{
+    display.setCursor(x, y);
+    display.println(text);
+}
+
+
 
 void Display::off()
 {

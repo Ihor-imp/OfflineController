@@ -314,7 +314,7 @@ void handleScreen()
 
 void setup()
 {
-    transporter.begin();
+
     buttonX.begin();
     buttonY.begin();
     buttonZ.begin();
@@ -326,7 +326,7 @@ void setup()
     display.printText("Z: ", 0, 20);
     display.printText("+", 120, 0);
 
-    displayUI.drawStepAndSpeed();
+
 
     display.update();
     countSleep = millis();
@@ -340,6 +340,5 @@ void loop()
     {
         machine.workButtonStop();
     }
-    
     handleScreen();
 }
