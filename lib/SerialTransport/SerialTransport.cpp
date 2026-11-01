@@ -1,3 +1,4 @@
+
 #include "SerialTransport.h"
 
 SerialTransport::SerialTransport(HardwareSerial &serial)
@@ -13,4 +14,14 @@ void SerialTransport::begin()
 void SerialTransport::send(const char *command)
 {
     serial.print(command);
+}
+
+void SerialTransport::sendFloat(float value, uint8_t precision)
+{
+    serial.print(value, precision);
+}
+
+void SerialTransport::sendRealtime(uint8_t command)
+{
+    serial.write(command);
 }

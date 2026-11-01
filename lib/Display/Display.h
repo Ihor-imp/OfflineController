@@ -1,3 +1,4 @@
+
 #pragma once
 #include <Arduino.h>
 #include <Wire.h>
@@ -19,7 +20,7 @@ private:
 
 public:
     Display(const DisplayConfig &config);
-    void printText(const __FlashStringHelper *text, uint16_t x, uint16_t y);
+
     void begin();
     void update();
     void clear();
@@ -28,6 +29,8 @@ public:
     void off();
 
     void printText(const char *text, uint16_t x, uint16_t y);
+    void printText(const __FlashStringHelper *text, uint16_t x, uint16_t y);
+
     void printValue(const float value, uint16_t x, uint16_t y);
     void fillRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 };

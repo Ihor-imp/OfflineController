@@ -1,3 +1,4 @@
+
 #pragma once
 #include <Arduino.h>
 
@@ -7,7 +8,6 @@ class GrblController
 {
 private:
     SerialTransport &transport;
-    char commandBuffer[64];
 
 public:
     GrblController(SerialTransport &transport);

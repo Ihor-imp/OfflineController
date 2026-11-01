@@ -1,3 +1,4 @@
+
 #include "GrblController.h"
 #include "SerialTransport.h"
 
@@ -8,46 +9,52 @@ GrblController::GrblController(SerialTransport &transport)
 
 void GrblController::jogX(float distance, float feed)
 {
-    snprintf(commandBuffer, sizeof(commandBuffer), "$J=G91 X%.1f F%.0f\n", distance, feed);
-    transport.send(commandBuffer);
+    transport.send("$J=G91 X");
+    transport.sendFloat(distance, 1);
+    transport.send(" F");
+    transport.sendFloat(feed, 0);
+    transport.send("\n");
 }
+
 void GrblController::jogY(float distance, float feed)
 {
-    snprintf(commandBuffer, sizeof(commandBuffer), "$J=G91 Y%.1f F%.0f\n", distance, feed);
-    transport.send(commandBuffer);
+    transport.send("$J=G91 Y");
+    transport.sendFloat(distance, 1);
+    transport.send(" F");
+    transport.sendFloat(feed, 0);
+    transport.send("\n");
 }
+
 void GrblController::jogZ(float distance, float feed)
 {
-    snprintf(commandBuffer, sizeof(commandBuffer), "$J=G91 Z%.1f F%.0f\n", distance, feed);
-    transport.send(commandBuffer);
+    transport.send("$J=G91 Z");
+    transport.sendFloat(distance, 1);
+    transport.send(" F");
+    transport.sendFloat(feed, 0);
+    transport.send("\n");
 }
 
 void GrblController::home()
 {
-    snprintf(commandBuffer, sizeof(commandBuffer), "$H\n");
-    transport.send(commandBuffer);
+    transport.send("$H\n");
 }
 
 void GrblController::stop()
 {
-    snprintf(commandBuffer, sizeof(commandBuffer), "!");
-    transport.send(commandBuffer);
+    transport.sendRealtime(0x85);
 }
 
 void GrblController::zeroX()
 {
-    snprintf(commandBuffer, sizeof(commandBuffer), "G92 X0\n");
-    transport.send(commandBuffer);
+    transport.send("G92 X0\n");
 }
 
 void GrblController::zeroY()
 {
-    snprintf(commandBuffer, sizeof(commandBuffer), "G92 Y0\n");
-    transport.send(commandBuffer);
+    transport.send("G92 Y0\n");
 }
 
 void GrblController::zeroZ()
 {
-    snprintf(commandBuffer, sizeof(commandBuffer), "G92 Z0\n");
-    transport.send(commandBuffer);
+    transport.send("G92 Z0\n");
 }

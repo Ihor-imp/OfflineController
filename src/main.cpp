@@ -21,9 +21,9 @@ DisplayUI displayUI(display, machine);
 
 Button buttonX(3);
 Button buttonY(4);
-Button buttonZ(5);
+Button buttonZ(2);
 Button buttonSTOP(6);
-Button buttonPLUS_MINUS(2);
+Button buttonPLUS_MINUS(9);
 
 uint32_t countSleep = 0;
 uint32_t timeSleep = 100000;
@@ -314,6 +314,7 @@ void handleScreen()
 
 void setup()
 {
+    transporter.begin();
 
     buttonX.begin();
     buttonY.begin();
@@ -326,7 +327,7 @@ void setup()
     display.printText("Z: ", 0, 20);
     display.printText("+", 120, 0);
 
-
+    displayUI.drawStepAndSpeed();
 
     display.update();
     countSleep = millis();
@@ -338,7 +339,9 @@ void loop()
 
     if (buttonSTOP.wasPressed())
     {
-        machine.workButtonStop();
+        controller.stop();
+        return;
     }
+
     handleScreen();
 }

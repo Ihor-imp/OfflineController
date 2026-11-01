@@ -1,77 +1,92 @@
+
 #include "Machine.h"
 #include "GrblController.h"
 
 Machine::Machine(GrblController &grbl)
     : grbl(grbl)
 {
+    machineSettings.step = stepValues[stepPosition];
+    machineSettings.speed = speedValue[speedPosition];
 }
 
-void Machine::workButtonAxis(const char *text, float &position, uint8_t x, uint8_t y)
+void Machine::workButtonAxis(const char *text, float &position,
+                             uint8_t x, uint8_t y)
 {
-    if (direction == Direction::PLUS)
-    {
-        position += machineSettings.step;
-    }
+    float distance = machineSettings.step;
+
     if (direction == Direction::MINUS)
     {
-        position -= machineSettings.step;
+        distance = -distance;
     }
+
+    position += distance;
 }
 
 void Machine::workButtonX()
 {
     float distance = machineSettings.step;
+
     if (direction == Direction::MINUS)
     {
         distance = -distance;
     }
 
-    workButtonAxis("X: ", positionX, 0, 0);
-    grbl.jogX(distance, 100);
+    grbl.jogX(distance, machineSettings.speed);
+    positionX += distance;
 }
 
 void Machine::workButtonY()
 {
     float distance = machineSettings.step;
+
     if (direction == Direction::MINUS)
     {
         distance = -distance;
     }
 
-    workButtonAxis("Y: ", positionY, 0, 10);
-    grbl.jogY(distance, 100);
+    grbl.jogY(distance, machineSettings.speed);
+    positionY += distance;
 }
 
 void Machine::workButtonZ()
 {
     float distance = machineSettings.step;
+
     if (direction == Direction::MINUS)
     {
         distance = -distance;
     }
 
-    workButtonAxis("Z: ", positionZ, 0, 20);
-    grbl.jogZ(distance, 100);
-}
-
-void Machine::zeroZ()
-{
-    grbl.zeroZ();
+    grbl.jogZ(distance, machineSettings.speed);
+    positionZ += distance;
 }
 
 void Machine::zeroX()
 {
     grbl.zeroX();
+    positionX = 0;
 }
 
 void Machine::zeroY()
 {
     grbl.zeroY();
+    positionY = 0;
+}
+
+void Machine::zeroZ()
+{
+    grbl.zeroZ();
+    positionZ = 0;
 }
 
 void Machine::moveToHome()
 {
     grbl.home();
+}
+
+void Machine::workButtonStop()
+{
+    grbl.stop();
 }
 
 void Machine::workButtonPlusOrMinus()
@@ -80,15 +95,10 @@ void Machine::workButtonPlusOrMinus()
     {
         direction = Direction::MINUS;
     }
-    else if (direction == Direction::MINUS)
+    else
     {
         direction = Direction::PLUS;
     }
-}
-
-void Machine::workButtonStop()
-{
-    grbl.stop();
 }
 
 void Machine::setStepPosition(uint8_t pos)

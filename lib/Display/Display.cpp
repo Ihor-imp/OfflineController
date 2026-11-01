@@ -1,3 +1,4 @@
+
 #include "Display.h"
 
 Display::Display(const DisplayConfig &config)
@@ -64,6 +65,13 @@ void Display::printText(const char *text, uint16_t x, uint16_t y)
     display.setCursor(x, y);
     display.println(text);
 }
+
+void Display::printText(const __FlashStringHelper *text, uint16_t x, uint16_t y)
+{
+    display.setCursor(x, y);
+    display.println(text);
+}
+
 void Display::printValue(const float value, uint16_t x, uint16_t y)
 {
     display.setCursor(x, y);
