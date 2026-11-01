@@ -20,10 +20,6 @@ class Machine
 private:
     GrblController &grbl;
 
-    float positionX = 0;
-    float positionY = 0;
-    float positionZ = 0;
-
     MachineSettings machineSettings = {
         0,
         0};
@@ -33,13 +29,9 @@ private:
     uint8_t stepPosition = 0;
     uint8_t speedPosition = 0;
 
-    float stepValues[4] = {100, 10, 1, 0.1};
-    uint16_t speedValue[5] = {1000, 700, 500, 350, 100};
-
 public:
     Machine(GrblController &grbl);
 
-    void workButtonAxis(const char *text, float &position, uint8_t x, uint8_t y);
     void workButtonX();
     void workButtonY();
     void workButtonZ();
@@ -61,11 +53,14 @@ public:
     uint8_t getStepPosition() const { return stepPosition; }
     uint8_t getSpeedPosition() const { return speedPosition; }
 
-    float getStepValue(uint8_t index) const { return stepValues[index]; }
-    uint16_t getSpeedValue(uint8_t index) const { return speedValue[index]; }
+float getStepValue(uint8_t index) const;
+uint16_t getSpeedValue(uint8_t index) const;
 
-    float getPositionX() const { return positionX; }
-    float getPositionY() const { return positionY; }
-    float getPositionZ() const { return positionZ; }
+    float getPositionX() const;
+    float getPositionY() const;
+    float getPositionZ() const;
+
     Direction getDirection() const { return direction; }
+
+    bool hasValidPosition() const;
 };

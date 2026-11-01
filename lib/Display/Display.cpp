@@ -38,8 +38,6 @@ void Display::printText(const __FlashStringHelper *text, uint16_t x, uint16_t y)
     display.println(text);
 }
 
-
-
 void Display::off()
 {
     display.ssd1306_command(SSD1306_DISPLAYOFF);
@@ -61,12 +59,6 @@ void Display::update()
 }
 
 void Display::printText(const char *text, uint16_t x, uint16_t y)
-{
-    display.setCursor(x, y);
-    display.println(text);
-}
-
-void Display::printText(const __FlashStringHelper *text, uint16_t x, uint16_t y)
 {
     display.setCursor(x, y);
     display.println(text);

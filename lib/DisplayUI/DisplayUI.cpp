@@ -9,7 +9,7 @@ DisplayUI::DisplayUI(Display &display, Machine &machine)
 void DisplayUI::drawPositionX()
 {
     display.on();
-    display.fillRect(13, 0, 35, 8);
+    display.fillRect(13, 0, 45, 8);
     display.printValue(machine.getPositionX(), 13, 0);
     display.update();
 }
@@ -17,7 +17,7 @@ void DisplayUI::drawPositionX()
 void DisplayUI::drawPositionY()
 {
     display.on();
-    display.fillRect(13, 10, 35, 8);
+    display.fillRect(13, 10, 45, 8);
     display.printValue(machine.getPositionY(), 13, 10);
     display.update();
 }
@@ -25,7 +25,7 @@ void DisplayUI::drawPositionY()
 void DisplayUI::drawPositionZ()
 {
     display.on();
-    display.fillRect(13, 20, 35, 8);
+    display.fillRect(13, 20, 45, 8);
     display.printValue(machine.getPositionZ(), 13, 20);
     display.update();
 }

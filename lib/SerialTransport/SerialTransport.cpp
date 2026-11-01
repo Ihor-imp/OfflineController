@@ -25,3 +25,13 @@ void SerialTransport::sendRealtime(uint8_t command)
 {
     serial.write(command);
 }
+
+int SerialTransport::available()
+{
+    return serial.available();
+}
+
+int SerialTransport::read()
+{
+    return serial.read();
+}

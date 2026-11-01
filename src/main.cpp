@@ -28,6 +28,9 @@ Button buttonPLUS_MINUS(9);
 uint32_t countSleep = 0;
 uint32_t timeSleep = 100000;
 
+uint32_t lastDisplayUpdate = 0;
+const uint32_t DISPLAY_INTERVAL_MS = 250;
+
 enum class Screen
 {
     MAIN,
@@ -74,21 +77,18 @@ void handleMain()
     if (buttonX.wasPressed())
     {
         machine.workButtonX();
-        displayUI.drawPositionX();
         countSleep = millis();
     }
 
     if (buttonY.wasPressed())
     {
         machine.workButtonY();
-        displayUI.drawPositionY();
         countSleep = millis();
     }
 
     if (buttonZ.wasPressed())
     {
         machine.workButtonZ();
-        displayUI.drawPositionZ();
         countSleep = millis();
     }
 
@@ -97,6 +97,16 @@ void handleMain()
         machine.workButtonPlusOrMinus();
         displayUI.drawDirection();
         countSleep = millis();
+    }
+
+    if (machine.hasValidPosition() &&
+        millis() - lastDisplayUpdate >= DISPLAY_INTERVAL_MS)
+    {
+        lastDisplayUpdate = millis();
+
+        displayUI.drawPositionX();
+        displayUI.drawPositionY();
+        displayUI.drawPositionZ();
     }
 }
 
@@ -322,10 +332,8 @@ void setup()
     buttonSTOP.begin();
     buttonPLUS_MINUS.begin();
     display.begin();
-    display.printText("X: ", 0, 0);
-    display.printText("Y: ", 0, 10);
-    display.printText("Z: ", 0, 20);
-    display.printText("+", 120, 0);
+
+    displayUI.drawMain();
 
     displayUI.drawStepAndSpeed();
 
@@ -335,6 +343,7 @@ void setup()
 
 void loop()
 {
+    controller.update();
     updateButtons();
 
     if (buttonSTOP.wasPressed())

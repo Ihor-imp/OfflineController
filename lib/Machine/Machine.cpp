@@ -1,25 +1,18 @@
-
 #include "Machine.h"
 #include "GrblController.h"
+#include <avr/pgmspace.h>
+
+static const float stepValues[4] PROGMEM = {
+    100.0f, 10.0f, 1.0f, 0.1f};
+
+static const uint16_t speedValue[5] PROGMEM = {
+    1000, 700, 500, 350, 100};
 
 Machine::Machine(GrblController &grbl)
     : grbl(grbl)
 {
-    machineSettings.step = stepValues[stepPosition];
-    machineSettings.speed = speedValue[speedPosition];
-}
-
-void Machine::workButtonAxis(const char *text, float &position,
-                             uint8_t x, uint8_t y)
-{
-    float distance = machineSettings.step;
-
-    if (direction == Direction::MINUS)
-    {
-        distance = -distance;
-    }
-
-    position += distance;
+    machineSettings.step = getStepValue(stepPosition);
+    machineSettings.speed = getSpeedValue(speedPosition);
 }
 
 void Machine::workButtonX()
@@ -32,7 +25,6 @@ void Machine::workButtonX()
     }
 
     grbl.jogX(distance, machineSettings.speed);
-    positionX += distance;
 }
 
 void Machine::workButtonY()
@@ -45,7 +37,6 @@ void Machine::workButtonY()
     }
 
     grbl.jogY(distance, machineSettings.speed);
-    positionY += distance;
 }
 
 void Machine::workButtonZ()
@@ -58,25 +49,21 @@ void Machine::workButtonZ()
     }
 
     grbl.jogZ(distance, machineSettings.speed);
-    positionZ += distance;
 }
 
 void Machine::zeroX()
 {
     grbl.zeroX();
-    positionX = 0;
 }
 
 void Machine::zeroY()
 {
     grbl.zeroY();
-    positionY = 0;
 }
 
 void Machine::zeroZ()
 {
     grbl.zeroZ();
-    positionZ = 0;
 }
 
 void Machine::moveToHome()
@@ -106,7 +93,7 @@ void Machine::setStepPosition(uint8_t pos)
     if (pos < 4)
     {
         stepPosition = pos;
-        machineSettings.step = stepValues[stepPosition];
+        machineSettings.step = getStepValue(stepPosition);
     }
 }
 
@@ -115,6 +102,46 @@ void Machine::setSpeedPosition(uint8_t pos)
     if (pos < 5)
     {
         speedPosition = pos;
-        machineSettings.speed = speedValue[speedPosition];
+        machineSettings.speed = getSpeedValue(speedPosition);
     }
+}
+
+float Machine::getPositionX() const
+{
+    return grbl.getPositionX();
+}
+
+float Machine::getPositionY() const
+{
+    return grbl.getPositionY();
+}
+
+float Machine::getPositionZ() const
+{
+    return grbl.getPositionZ();
+}
+
+bool Machine::hasValidPosition() const
+{
+    return grbl.hasValidPosition();
+}
+
+float Machine::getStepValue(uint8_t index) const
+{
+    if (index >= 4)
+    {
+        return 0.0f;
+    }
+
+    return pgm_read_float(&stepValues[index]);
+}
+
+uint16_t Machine::getSpeedValue(uint8_t index) const
+{
+    if (index >= 5)
+    {
+        return 0;
+    }
+
+    return pgm_read_word(&speedValue[index]);
 }
